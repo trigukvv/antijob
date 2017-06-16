@@ -1,4 +1,18 @@
-antijob01
-=========
+#AntiJob
 
-A Symfony project created on September 8, 2016, 1:45 am.
+
+**A social network engine dedicated at sharing hobby related activities.**
+
+##Installation
+
+Run
+
+`composer update`
+
+set database parameters (host, login, etc).
+
+Then run
+
+`bower update`
+
+to install Bootstrap and jquery locally.
