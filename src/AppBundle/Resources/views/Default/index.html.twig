@@ -1,0 +1,64 @@
+{% extends baseTemplate %}
+{% block sidebar %}
+    {% if hobby  %}
+        {% include 'AppBundle:Hobby:show.html.twig' with {'hobby':hobby}  %}
+    {% endif %}
+{% endblock %}
+{% block body %}
+    {% if is_granted('create', 'AppBundle:Article') %}
+        <div>
+            
+            <a href="{{ path('newArticle') }}">
+                <button class="btn btn-success">Написать статью</button>
+            </a>
+            
+        </div>        
+    {% endif %}
+    
+    {% if articlesPaginator is defined %}
+        {% for someArticle in articlesPaginator %}
+            <div>
+                {% include 'AppBundle:Article:preview.html.twig' with {'article':someArticle}  %}
+            </div>
+        {% endfor %} 
+
+        {{ renderPaginator(articlesPaginator,baseRoute) }}
+
+    {% endif %}
+
+    {% if article is defined %}
+        <div>
+            {% include 'AppBundle:Article:show.html.twig' with {'article':article}  %}
+        </div>
+        {% if commentsPaginator is defined %}
+            {% include 'AppBundle:Comment:paginate.html.twig' with {'commentsPaginator':commentsPaginator}  %}
+        {% endif %}
+        {% if is_granted('create','AppBundle:Comment') %}
+        <div>
+            
+            <a href="{{ path('newComment',{'article' : article.id}) }}">
+                <button class="btn btn-success">Добавить комментарий</button>
+            </a>
+            
+        </div>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+</style>
+{% endblock %}
+{% block javascripts %}
+{% if hobbyCategory %}
+<script>
+    selectCategory(document.getElementById("hobbyCategory{{ hobbyCategory.id }}"));
+</script>
+{% endif %}
+{% if hobby %}
+<script>
+    selectHobby(document.getElementById("hobby{{ hobby.id }}"));
+</script>
+{% endif %}
+{% endblock %}

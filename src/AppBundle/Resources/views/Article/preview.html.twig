@@ -1,0 +1,15 @@
+
+    <div>
+        <h3> <a href="{{ path('articleWithComments',{'article' : article.id})}}"> {{ article.title }} </a></h3>
+        {{ article.shortContent|raw }}
+        <p>Хобби: {% for articleHobby in article.hobbies %}{{articleHobby.title}} {% endfor %}</p>
+        <p>Автор: {{ article.author.userName }}; опубликовано {{ article.dateCreated|date('d.m.Y') }}</p>
+        {% if article.dateModified %}
+        <p>Отредактировано: {{ article.editor.userName }};  {{ article.dateModified|date('d.m.Y') }}</p>
+        {% endif %}
+    </div>
+    <div>
+        {% if is_granted('update',article) %} <a href="{{ path('editArticle',{'article' : article.id}) }}"><button class="btn btn-primary">Редактировать </button></a> {% endif %} 
+
+    </div>
+

@@ -1,0 +1,11 @@
+        {% if listItems|length > 0 %}
+        <section class="panel panel-primary">
+            <div class="panel-heading"><button class="btn btn-primary"  data-toggle="collapse" data-target="#adminPanelList">Администрирование</button></div>
+            <div class="list-group collapse" id="adminPanelList">
+            {% for listItem in listItems %}
+                <a href="{{listItem['path']}}" class="list-group-item"> {{listItem['title']}} </a>
+            {% endfor %}
+            </div>
+                
+        </section>
+        {% endif %}

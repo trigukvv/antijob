@@ -1,0 +1,7 @@
+{% if hobbiesByTitle is defined %}
+    {% for someHobby in hobbiesByTitle %}
+        {% include 'AppBundle:Hobby:show.html.twig' with {'hobby':someHobby}  %}
+        
+    {% endfor %}    
+{% endif %} 
+

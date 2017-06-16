@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <style>
+            
+
+            div.hobbyScale  {
+                display: inline-block;
+                background: #b3b3e9;
+                border-radius:8px;
+                border: 1px solid #7373d7;
+                margin: 1px;
+                padding: 2px;
+                min-width:80px;
+                font-height:1.5em;
+            }
+            .hobbyTreeUL li {
+                list-style-type: none;
+            }
+            /* Tooltip container */
+            .simpleTooltip {
+                position: relative;
+                display: inline-block;
+                border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+            }
+
+            /* Tooltip text */
+            .simpleTooltip .simpleTooltipBlock {
+                visibility: hidden;
+                width: 280px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                padding: 5px 0;
+                border-radius: 6px;
+
+                /* Position the tooltip text */
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -140px;
+
+                /* Fade in tooltip */
+                opacity: 0;
+                transition: opacity 1s;
+            }
+
+            /* Tooltip arrow */
+            .simpleTooltip .simpleTooltipBlock::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #555 transparent transparent transparent;
+            }
+
+            /* Show the tooltip text when you mouse over the tooltip container */
+            .simpleTooltip:hover .simpleTooltipBlock {
+                visibility: visible;
+                opacity: 1;
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet"
+            href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+        <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/collapse.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/dropdown.js') }}"></script>
+<script>
+    function toggleFolder(obj)
+    {
+        
+        var parentNode=obj.parentNode;
+        var childNodes=parentNode.childNodes;
+        var newStateIsOpen=true;
+        var i;
+        for (i=0;i<childNodes.length;i++)
+        {
+            var childNode=childNodes[i];
+            
+            if (childNode.nodeName=="UL")
+            {
+                
+                if (childNode.style.display == "none")
+                {
+                    newStateIsOpen=true;
+                    childNode.style.display ="block";
+                    
+
+                }
+                else
+                {
+                    newStateIsOpen=false;
+                    childNode.style.display = "none";
+                }
+            }
+
+        }
+        if (newStateIsOpen)
+        {
+{% image '@AppBundle/Resources/public/svg/folder-open.svg' %}
+            obj.src="{{ asset_url }}"
+{% endimage %}   
+        }
+        else
+        {
+{% image '@AppBundle/Resources/public/svg/folder-closed.svg' %}
+            obj.src="{{ asset_url }}"
+{% endimage %}   
+        }
+        
+    }
+
+    function selectCategoryLI(obj)
+    {
+        
+
+        var current=obj;
+
+        do
+        {
+
+            var childNodes=current.childNodes;
+            var i;
+            for (i=0;i<childNodes.length;i++)
+                if (childNodes[i].className=="hobbyTreeFolderImage")
+                    toggleFolder(childNodes[i]);
+                    
+            if (current.nodeName=="LI") current=current.parentNode.parentNode;
+        }
+        while (current.nodeName=="LI");
+        //window.alert(parent.nodeName);
+    }
+    function selectCategory(obj)
+    {
+        obj.style.fontWeight="bold";
+        selectCategoryLI(obj.parentNode);
+    }
+    function selectHobby(obj)
+    {
+        obj.style.fontWeight="bold";
+        selectCategoryLI(obj.parentNode.parentNode.parentNode);
+    }
+
+</script>        
+    </head>
+    <body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">AntiJob</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+{#
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+#}
+{#
+      <form class="navbar-form navbar-left">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+#}
+      <ul class="nav navbar-nav navbar-right">
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+{#
+            <li><a href="#">Link</a></li>
+#}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              {{ app.user.username }}  <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            {#<li><a href="#">Личный кабинет</a></li> #}
+            <li role="separator" class="divider"></li>
+            <li><a href="/logout">Выход из системы</a></li>
+          </ul>
+        </li>
+{% else %}
+            <li><a href="/register">Регистрация</a></li>
+            <li><a href="/login">Вход в систему</a></li>
+{% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            {{ render(controller('AppBundle:HobbyChooser:hobbychooserform')) }}
+
+            {{ render(controller('AppBundle:HobbySearch:hobbysearchform')) }}
+{% block sidebar %}{% endblock %}            
+            {{ render(controller('AppBundle:HobbyTree:index')) }}
+
+            {{ render(controller('AppBundle:AdminPanel:index')) }}
+            
+        </div>
+        <div class="col-md-8">
+            
+        {% block body %}{% endblock %}
+        </div>
+
+    </div>
+</div>
+        {% block javascripts %}{% endblock %}
+        
+    </body>
+</html>

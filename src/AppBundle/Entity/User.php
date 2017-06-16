@@ -1,0 +1,491 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use triguk\AuthorizationBundle\Entity\HasAuthRoles;
+
+/**
+ * User
+ *
+ * @ORM\Table(name="users")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ */
+class User implements UserInterface, HasAuthRoles, \Serializable
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=255, unique=true)
+     */
+    private $username;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255)
+     */
+    private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, unique=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Hobby", inversedBy="moderators")
+     */
+    private $moderatesHobbies;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="\triguk\AuthorizationBundle\Entity\AuthRole", inversedBy="users")
+     */
+    private $authRoles;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_active", type="boolean")
+     */
+    private $isActive;
+    
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="author")
+     */
+    private $articlesAuthorOf;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="editor")
+     */
+    private $articlesEditorOf;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="author")
+     */
+    private $commentsAuthorOf;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="editor")
+     */
+    private $commentsEditorOf;
+    
+  
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     *
+     * @return User
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     *
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+
+    /**
+     * Add comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     *
+     * @return User
+     */
+    public function addComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     */
+    public function removeComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+        public function __toString()
+    {
+		return $this->username;
+	}      
+
+    /**
+     * Add authRole
+     *
+     * @param \triguk\AuthorizationBundle\Entity\AuthRole $authRole
+     *
+     * @return User
+     */
+    public function addAuthRole(\triguk\AuthorizationBundle\Entity\AuthRole $authRole)
+    {
+        $this->authRoles[] = $authRole;
+
+        return $this;
+    }
+
+    /**
+     * Remove authRole
+     *
+     * @param \triguk\AuthorizationBundle\Entity\AuthRole $authRole
+     */
+    public function removeAuthRole(\triguk\AuthorizationBundle\Entity\AuthRole $authRole)
+    {
+        $this->authRoles->removeElement($authRole);
+    }
+
+    /**
+     * Get authRoles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthRoles()
+    {
+        return $this->authRoles;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+        
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function eraseCredentials()
+    {
+    }
+    
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+        ) = unserialize($serialized);
+    }
+
+
+    
+    
+
+    
+    
+    public function getGroups()
+    {
+        return $this->getModeratesHobbies();
+    }
+
+    /**
+     * Add moderatesHobby
+     *
+     * @param \AppBundle\Entity\Hobby $moderatesHobby
+     *
+     * @return User
+     */
+    public function addModeratesHobby(\AppBundle\Entity\Hobby $moderatesHobby)
+    {
+        $this->moderatesHobbies[] = $moderatesHobby;
+
+        return $this;
+    }
+
+    /**
+     * Remove moderatesHobby
+     *
+     * @param \AppBundle\Entity\Hobby $moderatesHobby
+     */
+    public function removeModeratesHobby(\AppBundle\Entity\Hobby $moderatesHobby)
+    {
+        $this->moderatesHobbies->removeElement($moderatesHobby);
+    }
+
+    /**
+     * Get moderatesHobbies
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getModeratesHobbies()
+    {
+        return $this->moderatesHobbies;
+    }
+
+    /**
+     * Add articlesAuthorOf
+     *
+     * @param \AppBundle\Entity\Article $articlesAuthorOf
+     *
+     * @return User
+     */
+    public function addArticlesAuthorOf(\AppBundle\Entity\Article $articlesAuthorOf)
+    {
+        $this->articlesAuthorOf[] = $articlesAuthorOf;
+
+        return $this;
+    }
+
+    /**
+     * Remove articlesAuthorOf
+     *
+     * @param \AppBundle\Entity\Article $articlesAuthorOf
+     */
+    public function removeArticlesAuthorOf(\AppBundle\Entity\Article $articlesAuthorOf)
+    {
+        $this->articlesAuthorOf->removeElement($articlesAuthorOf);
+    }
+
+    /**
+     * Get articlesAuthorOf
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArticlesAuthorOf()
+    {
+        return $this->articlesAuthorOf;
+    }
+
+    /**
+     * Add articlesEditorOf
+     *
+     * @param \AppBundle\Entity\Article $articlesEditorOf
+     *
+     * @return User
+     */
+    public function addArticlesEditorOf(\AppBundle\Entity\Article $articlesEditorOf)
+    {
+        $this->articlesEditorOf[] = $articlesEditorOf;
+
+        return $this;
+    }
+
+    /**
+     * Remove articlesEditorOf
+     *
+     * @param \AppBundle\Entity\Article $articlesEditorOf
+     */
+    public function removeArticlesEditorOf(\AppBundle\Entity\Article $articlesEditorOf)
+    {
+        $this->articlesEditorOf->removeElement($articlesEditorOf);
+    }
+
+    /**
+     * Get articlesEditorOf
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArticlesEditorOf()
+    {
+        return $this->articlesEditorOf;
+    }
+
+    /**
+     * Add commentsAuthorOf
+     *
+     * @param \AppBundle\Entity\Article $commentsAuthorOf
+     *
+     * @return User
+     */
+    public function addCommentsAuthorOf(\AppBundle\Entity\Article $commentsAuthorOf)
+    {
+        $this->commentsAuthorOf[] = $commentsAuthorOf;
+
+        return $this;
+    }
+
+    /**
+     * Remove commentsAuthorOf
+     *
+     * @param \AppBundle\Entity\Article $commentsAuthorOf
+     */
+    public function removeCommentsAuthorOf(\AppBundle\Entity\Article $commentsAuthorOf)
+    {
+        $this->commentsAuthorOf->removeElement($commentsAuthorOf);
+    }
+
+    /**
+     * Get commentsAuthorOf
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommentsAuthorOf()
+    {
+        return $this->commentsAuthorOf;
+    }
+
+    /**
+     * Add commentsEditorOf
+     *
+     * @param \AppBundle\Entity\Article $commentsEditorOf
+     *
+     * @return User
+     */
+    public function addCommentsEditorOf(\AppBundle\Entity\Article $commentsEditorOf)
+    {
+        $this->commentsEditorOf[] = $commentsEditorOf;
+
+        return $this;
+    }
+
+    /**
+     * Remove commentsEditorOf
+     *
+     * @param \AppBundle\Entity\Article $commentsEditorOf
+     */
+    public function removeCommentsEditorOf(\AppBundle\Entity\Article $commentsEditorOf)
+    {
+        $this->commentsEditorOf->removeElement($commentsEditorOf);
+    }
+
+    /**
+     * Get commentsEditorOf
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommentsEditorOf()
+    {
+        return $this->commentsEditorOf;
+    }
+}

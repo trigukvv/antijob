@@ -1,0 +1,15 @@
+
+{% for comment in commentsPaginator %}
+    <div>
+        {% if commentDeleteForms and commentDeleteForms[comment.id] is defined %}
+            {% set commentDeleteForm=commentDeleteForms[comment.id] %}
+        {% else %}
+            {% set commentDeleteForm=null %}
+        {% endif %}
+        {% include 'AppBundle:Comment:show.html.twig' with {'comment':comment, 'commentDeleteForm':commentDeleteForm}  %}
+    </div>
+
+{% endfor %} 
+
+{{ renderPaginator(commentsPaginator,baseRoute) }}
+    

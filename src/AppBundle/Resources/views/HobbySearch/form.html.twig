@@ -1,0 +1,57 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <button class="btn btn-primary"  data-toggle="collapse" data-target="#hobbySearch"> Подбор хобби по названию  &#8675;</button>
+    </div>
+    <div class="panel-body collapse" id="hobbySearch">
+    
+{{ form_start(searchform, {'attr': {'onsubmit':'searchByName(); return false;'} } ) }}
+    {% for widget in searchform %}
+        {{ form_row(widget) }}
+        
+    {% endfor %}
+    
+{{ form_end(searchform) }}
+
+<button class="btn btn-primary" onclick="searchByName();">Подобрать</button>
+<div id="hobbySearchResult" class="pre-scrollable"></div>
+    </div>
+</div>
+
+<script>
+    function searchByName()
+    {
+        var address="{{ path('hobbysearchresult') }}";
+        var request="";
+    {% set completed = 0 %}{% set total = searchform|length %}
+    
+    {% for widget in searchform %}
+{% set completed = completed + 1 %}
+        request+="{{widget.vars.full_name}}="+document.getElementById("{{widget.vars.id}}").value{% if completed < total %}+"&"{% endif %};
+    {% endfor %}  
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', address, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+        
+
+        xhr.onreadystatechange = function() { // (3)
+            if (xhr.readyState != 4) return;
+
+            
+
+            if (xhr.status != 200) {
+                alert(xhr.status + ': ' + xhr.statusText);
+            } else {
+                document.getElementById('hobbySearchResult').innerHTML=xhr.responseText;
+                //alert(xhr.responseText);
+                //window.open(request);
+            }
+
+        }
+        
+        xhr.send(request);
+
+    }
+</script>

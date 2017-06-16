@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+         <a href="{{ path('hobbyIndex', {'hobby':hobby.id }) }}">
+             {{ hobby.title }} 
+         </a>
+    </div>
+    <div class="panel-body">
+        <div>
+        
+        {{ hobby.description }}
+        </div>
+ 
+        {% for hsv in hobby.hobbyScaleValues %}
+            <div class="hobbyScale simpleTooltip"> 
+                
+                <img src="{{ asset(hsv.hobbyScale.icon) }}" height="48px"/>
+                {{ hsv.value|convertHobbyScaleValue}}
+                <div class="simpleTooltipBlock">
+                    {{ hsv.hobbyScale.title }}
+                </div>
+            </div>
+            
+        {% endfor %}
+
+    </div>  
+
+</div>
+
+

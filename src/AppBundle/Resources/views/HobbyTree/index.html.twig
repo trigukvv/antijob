@@ -1,0 +1,40 @@
+
+{% if nonRoot is defined %}
+<ul style="display:none;">
+{% else %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="/" >Все хобби</a>
+    </div>
+    <div class="panel-body" id="hobbyTree">
+<ul class="hobbyTreeUL" style="display:block;">
+{% endif %}
+
+{% for item in items %}
+    <li> 
+{% image '@AppBundle/Resources/public/svg/folder-closed.svg' %}
+    <img src="{{ asset_url }}" class="hobbyTreeFolderImage" alt="Folder-closed" onclick="toggleFolder(this);"/>
+{% endimage %} 
+    
+    <a href="{{ path('categoryIndex',{'hobbyCategory':item['node'].id} ) }}" id="hobbyCategory{{item['node'].id}}">{{ item['node'].title }} </a>
+    {% if item['children']|length > 0 %}
+    {% include 'AppBundle:HobbyTree:index.html.twig' with {'items': item['children'],'nonRoot' : true } %}
+    {% endif %}
+    {% if item['leafs']|length > 0 %}
+        <ul style="display:none;">
+        {% for someHobby in item['leafs'] %}
+            <li>
+                {% include 'AppBundle:Hobby:preview.html.twig' with {'hobby':someHobby} %}
+                
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </li>
+
+{% endfor %}
+</ul>
+{% if nonRoot is not defined %}
+    </div>
+</div>
+{% endif %}

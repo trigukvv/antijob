@@ -1,0 +1,24 @@
+
+    <div>
+        <h3> {{ article.title }} </h3>
+        <p>Автор: {{ article.author.userName }}; опубликовано {{ article.dateCreated|date('d.m.Y') }}</p>
+        {% if article.dateModified %}
+        <p>Отредактировано: {{ article.editor.userName }};  {{ article.dateModified|date('d.m.Y') }}</p>
+        {% endif %}
+        {{ article.fullContent|raw }}
+        <p>Хобби: {% for articleHobby in article.hobbies %}{{articleHobby.title}} {% endfor %}</p>
+
+    </div>
+    <div>
+        {% if is_granted('update',article) %} 
+        <a href="{{ path('editArticle',{'article' : article.id}) }}">
+            <button class="btn btn-warning">Редактировать </button>
+        </a> 
+        {% endif %}
+        {% if is_granted('delete',article) %} 
+            {{ form_start(delete_form, {'attr': {'onsubmit':'return window.confirm("Действительно удалить?");'} } ) }}
+                {{ form_widget(delete_form) }}
+            {{ form_end(delete_form) }}
+        {% endif %} 
+    </div>
+

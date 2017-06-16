@@ -1,0 +1,63 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#hobbyChooser"> Подбор хобби по параметрам  &#8675;</button>
+    </div>
+    <div class="panel-body collapse" id="hobbyChooser">
+    
+{{ form_start(chooserform) }}
+    {% for widget in chooserform %}
+        {% if widget.vars.name != '_token' %}
+            {% set labelId=widget.vars.name ~'Label' %}
+            {{ form_label(widget, null, {'label_attr': {'id': labelId}}) }}
+            {{ form_label(widget, '0.0')}}{% set jsCode="this.previousSibling.innerHTML=this.value/20;" %}{{ form_widget(widget, {'attr' : {'onchange':jsCode|raw} } )|raw }}
+        {% else %}
+            {{ form_row(widget) }}
+        {% endif %}    
+            
+    {% endfor %}
+    
+{{ form_end(chooserform) }}
+
+<button class="btn btn-primary" onclick="chooseByScaleValues();">Подобрать</button>
+<div id="hobbyChooserResult" class="pre-scrollable"></div>
+    </div>
+</div>
+
+<script>
+    function chooseByScaleValues()
+    {
+        var address="{{ path('hobbychooserresult') }}";
+        var request="";
+    {% set completed = 0 %}{% set total = chooserform|length %}
+    
+    {% for widget in chooserform %}
+{% set completed = completed + 1 %}
+        request+="{{widget.vars.full_name}}="+document.getElementById("{{widget.vars.id}}").value{% if completed < total %}+"&"{% endif %};
+    {% endfor %}  
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', address, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+        
+
+        xhr.onreadystatechange = function() { // (3)
+            if (xhr.readyState != 4) return;
+
+            
+
+            if (xhr.status != 200) {
+                alert(xhr.status + ': ' + xhr.statusText);
+            } else {
+                document.getElementById('hobbyChooserResult').innerHTML=xhr.responseText;
+                //alert(xhr.responseText);
+                //window.open(request);
+            }
+
+        }
+        
+        xhr.send(request);
+
+    }
+</script>

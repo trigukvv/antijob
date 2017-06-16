@@ -1,0 +1,23 @@
+ 
+    <div>
+        <div class="simpleTooltip">
+            <a href="{{ path('hobbyIndex',{'hobby':hobby.id} ) }}" 
+                id="hobby{{hobby.id}}">
+                {{ hobby.title }} 
+            </a> 
+            <div class="simpleTooltipBlock">
+
+                {% for hsv in hobby.hobbyScaleValues %}
+                    <div class="hobbyScale"> 
+
+                    <img src="{{ asset(hsv.hobbyScale.icon) }}" height="48px"/>
+                    {{ hsv.value|convertHobbyScaleValue}}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+
+

@@ -1,0 +1,27 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <p> {{ comment.author.userName }}  {{ comment.dateCreated|date('d.m.Y') }}</p>
+        {% if comment.dateModified %}
+        <p>Отредактировано: {{ comment.editor.userName }};  {{ comment.dateModified|date('d.m.Y') }}</p>
+        {% endif %}
+    </div>
+
+    <div class="panel-body">
+        {{ comment.content|raw }}
+        <div>
+        {% if is_granted('update',comment) %} 
+        <a href="{{ path('editComment',{'comment' : comment.id}) }}">
+            <button class="btn btn-warning">
+                Редактировать 
+            </button>
+        </a>
+        {% endif %}
+        {% if commentDeleteForm %}
+        
+            {{ form_start(commentDeleteForm, {'attr': {'onsubmit':'return window.confirm("Действительно удалить?");'} } ) }}
+                {{ form_widget(commentDeleteForm) }}
+            {{ form_end(commentDeleteForm) }}
+        {% endif %} 
+        </div>       
+    </div>
+</div>    
