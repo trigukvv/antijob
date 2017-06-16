@@ -42,12 +42,12 @@
     },
     "repositories" : [{
         "type" : "vcs",
-        "url" : "https://github.com/trigukvv/AuthenticationBundle.git",
+        "url" : "https://github.com/trigukvv/AuthenticationBundle.git"
     },
     {
         "type" : "vcs",
-        "url" : "https://github.com/trigukvv/AuthorizationBundle.git",
-    },
+        "url" : "https://github.com/trigukvv/AuthorizationBundle.git"
+    }
     ],
     "scripts": {
         "symfony-scripts": [
