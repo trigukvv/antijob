@@ -1,9 +1,9 @@
-#AntiJob
+# AntiJob
 
 
 **A social network engine dedicated at sharing hobby related activities.**
 
-##Installation
+## Installation
 
 Run
 
@@ -16,3 +16,9 @@ Then run
 `bower update`
 
 to install Bootstrap and jquery locally.
+
+Start server by typing
+
+`php bin/console server:run`
+
+and enjoy.
