@@ -1,6 +1,6 @@
 {
-    "name": "triguk/antijob01",
-    "license": "proprietary",
+    "name": "triguk/antijob",
+    "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {
@@ -31,13 +31,24 @@
         "symfony/assetic-bundle": "^2.8",
         "egeloen/ckeditor-bundle": "^5.0",
         "helios-ag/fm-elfinder-bundle": "~6",
-        "symfony/filesystem": "^3.2"
+        "symfony/filesystem": "^3.2",
+        "trigukvv/AuthenticationBundle": "dev-master" ,
+        "trigukvv/AuthorizationBundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3"
     },
+    "repositories" : [{
+        "type" : "vcs",
+        "url" : "https://github.com/trigukvv/AuthenticationBundle.git",
+    },
+    {
+        "type" : "vcs",
+        "url" : "https://github.com/trigukvv/AuthorizationBundle.git",
+    },
+    ],
     "scripts": {
         "symfony-scripts": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
